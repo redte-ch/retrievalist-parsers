@@ -197,6 +197,14 @@ Two document traversal generators are available that yield each section `in-orde
         """
 ```
 
+# How to run the github project
+git clone "link to repo"
+cd pdfstructure
+pip install -r requirements.txt
+python setup.py build
+python setup.py install
+python main.py
+
 
 # TODOs
 - [ ] **Detect the document layout type (Columns, Book, Magazine)**
