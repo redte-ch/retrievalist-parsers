@@ -6,22 +6,19 @@ class Section:
     def __init__(self, element, level):
         self.heading = element
         self.children = []
-        self.level = 0
+        self.level = level
 
     def to_dict(self):
         return {
             'heading': {
                 'text': self.heading.text,
-                'style': self.heading.style.to_dict()  # Use the to_dict method of Style
+                'style': self.heading.style.to_dict(),  # Use the to_dict method of Style
+                'tokens': self.heading.tokens,
+                'word_bbox': self.heading.word_bbox,
             },
-            'children': [child.to_dict() for child in self.children]
+            'children': [child.to_dict() for child in self.children],
+            'level': self.level
         }
-
-    def to_json(self):
-        return json.dumps(self.to_dict(), indent=4)
-
-    def __str__(self):
-        return f"Section(Heading: {self.heading.text}, Level: {self.level}, Children: {len(self.children)})"
 
 
 def serialize_section(obj):
@@ -31,38 +28,36 @@ def serialize_section(obj):
 
 
 class TextElement:
-    def __init__(self, text, style, bbox):
+    def __init__(self, text, style, bbox, tokens, word_bbox):
         self.text = text
         self.style = style
         self.bbox = bbox
+        self.tokens = tokens
+        self.word_bbox = word_bbox
 
 
 class Style:
-    def __init__(self, font, size, color):
+    def __init__(self, font, size, color, flags):
         self.font = font
         self.size = size
         self.color = color
+        self.flags = flags
 
     def to_dict(self):
         return {
             'font': self.font,
             'size': self.size,
-            'color': self.color
+            'color': self.color,
+            'flags': self.flags
         }
 
 
-class DanglingTextSection:
+class DanglingTextSection(Section):
     def __init__(self):
-        self.children = []
-        self.level = 0
+        super().__init__(element=None)
 
-    def to_dict(self):
-        return {
-            'children': [child.to_dict() for child in self.children],
-            'level': self.level,
-            'text': self.children[0].heading.text if self.children else "",
-            'style': self.children[0].heading.style.to_dict() if self.children else {}
-        }
+    def __str__(self):
+        return "{}".format(" ".join([str(e) for e in self.content]))
 
 # now this basically convert each list element into this form of text_element we defined abive.
 
@@ -78,9 +73,12 @@ def convert_to_text_elements(element_data):
             style=Style(
                 font=spans['font'],
                 size=spans['size'],
-                color=spans['color']
+                color=spans['color'],
+                flags=spans['flags']
             ),
-            bbox=line['bbox']
+            bbox=line['bbox'],
+            tokens=line['tokens'],
+            word_bbox=line['word_bbox']
         )
         text_elements.append(text_element)
 
@@ -94,7 +92,7 @@ def create_hierarchy(extracted_data: List[dict], style_distribution: dict) -> Li
     for element_data in extracted_data:
         text_elements = convert_to_text_elements(element_data)
 
-        for text_element in text_elements:
+        for text_element in text_elements:  # 5
             style = text_element.style
 
             if header_detector(text_element, style_distribution):
@@ -132,15 +130,18 @@ def create_hierarchy(extracted_data: List[dict], style_distribution: dict) -> Li
 
 def header_detector(element, style_distribution):
     """
-    Sample header detection logic based on font size.
+    Sample header detection logic based on font size, bold, and italic properties.
     You may need to adjust this based on your specific data characteristics.
     """
-    # detect if the particular text element is an header
-    if (len(element.text) <= 2):
-        return False
+    # Check if the font size is greater than the body size
+    if element.style.size > (style_distribution['_body_size'] + 1):
+        # Check for bold and italic conditions using flags property
+        if element.style.flags & 2**1:  # Check for italic (bit 1)
+            return True
 
-    if (element.style.size > (style_distribution['_body_size']+1)):
-        return True
+        if element.style.flags & 2**4:  # Check for bold (bit 4)
+            return True
+
     return False
 
 
@@ -194,11 +195,9 @@ with open('block_list.json') as f:
 
 # this is the meta deta for the whole document this i need where to get this
 distribution_data = {
-    '_data': {12.0: 35, 13.55: 3, 13.56: 3, 11.99: 2},
-    '_body_size': 11.99,
+    '_body_size': 11.99,  # see
     '_min_found_size': 11.99,
     '_max_found_size': 29.99,
-    '_line_margin': 0.5
 }
 
 # print(type(samplee_data)) : this is the list
