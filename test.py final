@@ -3,22 +3,29 @@ import json
 
 
 class Section:
-    def __init__(self, element, level):
+    def __init__(self, element, level=0):
         self.heading = element
         self.children = []
+        self.level = None
+        self.set_level(level)
+
+    def set_level(self, level):
         self.level = level
 
     def to_dict(self):
+        heading_text = self.heading.text if self.heading else ""
+        heading_style = self.heading.style.to_dict() if self.heading and self.heading.style else {}
         return {
             'heading': {
-                'text': self.heading.text,
-                'style': self.heading.style.to_dict(),  # Use the to_dict method of Style
-                'tokens': self.heading.tokens,
-                'word_bbox': self.heading.word_bbox,
+                'text': heading_text,
+                'style': heading_style,
+                'tokens': getattr(self.heading, 'tokens', []),
+                'word_bbox': getattr(self.heading, 'word_bbox', []),
             },
             'children': [child.to_dict() for child in self.children],
             'level': self.level
         }
+
 
 
 def serialize_section(obj):
@@ -96,7 +103,8 @@ def create_hierarchy(extracted_data: List[dict], style_distribution: dict) -> Li
             style = text_element.style
 
             if header_detector(text_element, style_distribution):
-                child = Section(text_element, level=len(level_stack))
+                child = Section(text_element)
+                child.set_level(len(level_stack))
                 header_size = style.size
 
                 if not level_stack:
@@ -122,7 +130,7 @@ def create_hierarchy(extracted_data: List[dict], style_distribution: dict) -> Li
                     else:
                         dangling_content = DanglingTextSection()
                         dangling_content.children.append(content_node)
-                        dangling_content.level = len(level_stack)
+                        dangling_content.set_level(len(level_stack))
                         structured.append(dangling_content)
 
     return structured
@@ -196,12 +204,8 @@ with open('block_list.json') as f:
 # this is the meta deta for the whole document this i need where to get this
 distribution_data = {
     '_body_size': 11.99,  # see
-    '_min_found_size': 11.99,
-    '_max_found_size': 29.99,
 }
 
-# print(type(samplee_data)) : this is the list
-print(samplee_data[0])
 output_structure = create_hierarchy(samplee_data, distribution_data)
 
 
