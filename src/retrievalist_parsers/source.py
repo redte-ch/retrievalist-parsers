@@ -4,6 +4,7 @@ from typing import Any, Generator
 from pdfminer.high_level import extract_pages
 from pdfminer.layout import (
     LAParams,
+    LTAnno,
     LTChar,
     LTFigure,
     LTTextBoxHorizontal,
@@ -100,13 +101,19 @@ class FileSource(Source):
         wrapper.page = container.page
         stack = []
         for line in container:
-            size = max(
-                [
-                    obj.size
-                    for obj in itertools.islice(line, 10)
-                    if isinstance(obj, LTChar)
-                ]
-            )
+            if isinstance(line, LTAnno):
+                continue
+
+            if isinstance(char := line, LTChar):
+                size = char.size
+
+            else:
+                sizes = []
+                for char in itertools.islice(line, 10):
+                    if isinstance(char, LTChar):
+                        sizes.append(char.size)
+                size = max(sizes)
+
             if not stack:
                 wrapper.add(line)
                 stack.append(size)

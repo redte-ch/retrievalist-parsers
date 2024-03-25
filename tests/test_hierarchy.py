@@ -11,17 +11,21 @@ from retrievalist_parsers.source import FileSource
 
 class TestHierarchy(TestCase):
     doc_with_columns = str(
-        Path("resources/IE00BM67HT60-ATB-FS-DE-2020-2-28.pdf").absolute()
+        Path("tests/resources/IE00BM67HT60-ATB-FS-DE-2020-2-28.pdf").absolute()
     )
-    straight_forward_doc = str(Path("resources/interview_cheatsheet.pdf").absolute())
-    nested_doc_bold_title = str(Path("resources/5648.pdf").absolute())
+    straight_forward_doc = str(
+        Path("tests/resources/interview_cheatsheet.pdf").absolute()
+    )
+    nested_doc_bold_title = str(Path("tests/resources/5648.pdf").absolute())
 
-    same_style_doc = str(Path("resources/SameStyleOnly.pdf").absolute())
-    same_size_bold_header = str(Path("resources/SameSize_BoldTitle.pdf").absolute())
-    same_size_enum_header = str(
-        Path("resources/SameSize_EnumeratedTitle.pdf").absolute()
+    same_style_doc = str(Path("tests/resources/SameStyleOnly.pdf").absolute())
+    same_size_bold_header = str(
+        Path("tests/resources/SameSize_BoldTitle.pdf").absolute()
     )
-    paper = str(Path("resources/paper.pdf").absolute())
+    same_size_enum_header = str(
+        Path("tests/resources/SameSize_EnumeratedTitle.pdf").absolute()
+    )
+    paper = str(Path("tests/resources/paper.pdf").absolute())
     parser = HierarchyParser()
 
     def test_no_hierarchy_detected(self):

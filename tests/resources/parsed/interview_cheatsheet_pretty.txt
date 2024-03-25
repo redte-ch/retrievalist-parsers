@@ -6,10 +6,10 @@ This is my technical interview cheat sheet. Feel free to fork it or do whatever 
 
 [TSiege / The Technical Interview Cheat Sheet.md]
 	Last active 2 days ago • Report abuse
-	Embed
-	Download ZIP
-	<script src="https://gis
 	This is my technical interview cheat sheet. Feel free to fork it or do whatever you want with it. PLEASE let me know if there are any errors or if anything
+	Embed
+	<script src="https://gis
+	Download ZIP
 	crucial is missing. I will add more links soon.
 	The Technical Interview Cheat Sheet.md
 
@@ -17,11 +17,9 @@ This is my technical interview cheat sheet. Feel free to fork it or do whatever 
 	I have moved this over to the Tech Interview Cheat Sheet Repo since a gist is too difficult to maintain as an open source
 	endevaor and there is no way to version it. I have updated below, but I will not be able to keep this one up to date so
 	please checkout the repo instead. The below is just for some preservation for those who stumble across here.
-	\
-
-[Studying for a Tech Interview Sucks, so Here's a Cheat Sheet to Help]
 	This list is meant to be both a quick guide and reference for further research into these topics. It's basically a summary of
 	that comp sci course you never took or forgot about, so there's no way it can cover everything in depth.
+tudying for a Tech Interview Sucks, so Here's a Cheat Sheet to Help
 
 [Contributing]
 	Please see the Tech Interview Cheat Sheet Repo
@@ -331,8 +329,8 @@ This is my technical interview cheat sheet. Feel free to fork it or do whatever 
 			  repeat above two steps until all differences have been found 
 			  return largest difference
 			This algorithm never needed to compare all the differences to one another, saving it an entire iteration.
-			Author
-			Owner
 			TSiege commented on 2 May 2014
 			https://gist.github.com/TSiege/cbb0507082bb18ff7e4b#ﬁle-the-technical-interview-cheat-sheet-md
+			Author
+			Owner
 			6/18

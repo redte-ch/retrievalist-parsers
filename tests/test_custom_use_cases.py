@@ -13,7 +13,7 @@ class TestExamples(TestCase):
     parser = HierarchyParser()
 
     def test_count_paragraph_words(self):
-        test_file = str(Path("resources/lorem.pdf"))
+        test_file = str(Path("tests/resources/lorem.pdf"))
         document = self.parser.parse_pdf(FileSource(file_path=test_file))
         assert_token_order = [50, 100, 150]
         for level, title, content in traverse_inorder_sections_with_content(document):
@@ -23,7 +23,7 @@ class TestExamples(TestCase):
             print("{}{};\twords: {}".format(prefix, title, len(tokens)))
 
     def test_load_book(self):
-        book_path = Path("resources/interview_cheatsheet.pdf")
+        book_path = Path("tests/resources/interview_cheatsheet.pdf")
         document = self.parser.parse_pdf(FileSource(file_path=str(book_path)))
 
         for level, title, content in traverse_inorder_sections_with_content(document):

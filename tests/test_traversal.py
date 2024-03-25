@@ -13,8 +13,10 @@ from retrievalist_parsers.source import FileSource
 
 
 class TestDocumentTraversal(TestCase):
-    straight_forward_doc = str(Path("resources/interview_cheatsheet.pdf").absolute())
-    same_style_doc = str(Path("resources/SameStyleOnly.pdf").absolute())
+    straight_forward_doc = str(
+        Path("tests/resources/interview_cheatsheet.pdf").absolute()
+    )
+    same_style_doc = str(Path("tests/resources/SameStyleOnly.pdf").absolute())
     test_doc = None
     test_doc_same_style = None
 

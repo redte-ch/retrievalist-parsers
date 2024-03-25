@@ -2,7 +2,7 @@ import itertools
 import math
 import os
 from pathlib import Path
-from typing import Generator
+from typing import Generator, Iterable
 
 from pdfminer.high_level import extract_pages
 from pdfminer.layout import (
@@ -13,8 +13,10 @@ from pdfminer.layout import (
     LTTextLineHorizontal,
 )
 
+DOCUMENT_EXTENSIONS = ("doc", "docx", "ppt", "pptx", "xls", "xlsx", "odt", "rtf")
 
-def char_generator(text_container: LTTextContainer):
+
+def generate_characters(text_container: LTTextContainer):
     for container in text_container:
         if isinstance(container, LTChar):
             yield container
@@ -24,25 +26,18 @@ def char_generator(text_container: LTTextContainer):
                     yield obj
 
 
-def dict_subset(d, exclude_keys):
-    return {k: v for k, v in d.items() if k not in exclude_keys}
+def exclude_keys_from_dict(dict_obj, exclude_keys):
+    return {key: value for key, value in dict_obj.items() if key not in exclude_keys}
 
 
-def word_generator(text_container: LTTextContainer):
-    """
-    iterates through container's characters and yields a word as soon as found (trailing whitespace).
-    @param text_container:
-    @return:
-    """
+def generate_words(text_container: LTTextContainer):
     characters = []
-
-    for obj in char_generator(text_container):
+    for obj in generate_characters(text_container):
         character = obj.get_text()
         if character != " ":
             characters.append(character)
         else:
             word = "".join(characters).strip()
-            # skip if word is just a whitespace on its own
             if len(word) > 0:
                 yield word
             characters.clear()
@@ -50,32 +45,26 @@ def word_generator(text_container: LTTextContainer):
         yield "".join(characters)
 
 
-def element_generator(
+def get_params_for_document_type():
+    # disabling boxes_flow, as the style based hierarchy detection is based on
+    # a purely flat list of paragraphs
+    params = LAParams(boxes_flow=None, detect_vertical=False)  # setting for easy doc
+    return params
+
+
+def generate_text_elements(
     file_path: str, page_numbers=None
 ) -> Generator[LTTextContainer, None, None]:
-    """
-    yields flat list of paragraphs within a document.
-    :param file_path:
-    :return:
-    """
-    pNumber = 0
-    # disable boxes_flow, style based hierarchy detection is based on purely
-    # flat list of paragraphs
-    params = LAParams(boxes_flow=None, detect_vertical=False)  # setting for easy doc
-    # params = LAParams(boxes_flow=0.5, detect_vertical=True) # setting for column doc
-    # todo, do pre-analysis in count_sizes --> are there many boxes within same line
-    # todo, understand LAParams, for columns, NONE works better, for vertical only layout LAParams(boxes_flow=None, detect_vertical=False) works better!! :O
-    #   do some sort of layout analyis, if there are many boxes vertically next to each other, use layout analysis
-    #   - column type
-    #   - straight forward document
+    params = get_params_for_document_type()
+    page_number = 0
     for page_layout in extract_pages(
         file_path, laparams=params, page_numbers=page_numbers
     ):
         for element in page_layout:
             if isinstance(element, LTTextContainer):
-                element.meta = {"page": pNumber}
+                element.meta = {"page": page_number}
                 yield element
-        pNumber += 1
+        page_number += 1
 
 
 def truncate(number, decimals=0):
@@ -93,14 +82,12 @@ def truncate(number, decimals=0):
     return math.trunc(number * factor) / factor
 
 
-class DocTypeFilter:
-    def __init__(
-        self, endings=("doc", "docx", "ppt", "pptx", "xls", "xlsx", "odt", "rtf")
-    ):
-        self.endings = endings if isinstance(endings, (list, tuple)) else (endings)
+class DocumentTypeFilter:
+    def __init__(self, endings=DOCUMENT_EXTENSIONS):
+        self.endings = endings if isinstance(endings, (list, tuple)) else (endings,)
 
-    def test(self, name):
-        return name.split(".")[-1].lower() in self.endings
+    def does_file_match(self, filename):
+        return filename.split(".")[-1].lower() in self.endings
 
 
 def closest_key(sorted_dict, key):
@@ -111,11 +98,13 @@ def closest_key(sorted_dict, key):
     return min(keys, key=lambda k: abs(key - k))
 
 
-def find_file(root_dir: str, type_filter: DocTypeFilter, print_mod=10) -> iter([Path]):
+def find_file(
+    root_dir: str, type_filter: DocumentTypeFilter, print_mod=10
+) -> Iterable[Path]:
     processed = 0
     for root, dirs, files in os.walk(root_dir):
         for file in files:
-            if type_filter.test(file):
+            if type_filter.does_file_match(file):
                 yield Path(root + "/" + file)
                 processed += 1
                 if print_mod and processed % print_mod == 0:

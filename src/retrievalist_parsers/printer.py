@@ -1,6 +1,7 @@
 import json
 from typing import Iterator
 
+from retrievalist_parsers import utils
 from retrievalist_parsers.hierarchy.traversal import traverse_in_order
 from retrievalist_parsers.model.document import (
     Section,
@@ -8,7 +9,6 @@ from retrievalist_parsers.model.document import (
     TextElement,
 )
 from retrievalist_parsers.model.style import Style
-from retrievalist_parsers.utils import dict_subset
 
 
 class Printer:
@@ -91,7 +91,9 @@ def encode_pdf_element(obj):
     @return:
     """
     if isinstance(obj, TextElement):
-        properties = dict_subset(obj.__dict__.copy(), ("_data", "_text"))
+        properties = utils.exclude_keys_from_dict(
+            obj.__dict__.copy(), ("_data", "_text")
+        )
         properties["text"] = obj.text
         properties["style"] = encode_pdf_element(obj.style)
         return properties

@@ -8,7 +8,8 @@ from retrievalist_parsers.model.document import StructuredPdfDocument
 class TestSection(TestCase):
     def test_full_content(self):
         with open(
-            str(Path("resources/parsed/interview_cheatsheet.json").absolute()), "r"
+            str(Path("tests/resources/parsed/interview_cheatsheet.json").absolute()),
+            "r",
         ) as fp:
             json_string = json.load(fp)
             document = StructuredPdfDocument.from_json(json_string)

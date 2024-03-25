@@ -90,15 +90,15 @@
                 {
                     "heading": {
                         "style": {
-                            "bold": true,
+                            "bold": false,
                             "italic": false,
-                            "font_name": ".SFNSText-Semibold",
-                            "mapped_font_size": "xsmall",
-                            "mean_size": 6.4,
-                            "max_size": 6.403161909201572
+                            "font_name": ".SFNSText",
+                            "mapped_font_size": "small",
+                            "mean_size": 7.4,
+                            "max_size": 7.470355560735129
                         },
                         "page": 0,
-                        "text": "Embed"
+                        "text": "This is my technical interview cheat sheet. Feel free to fork it or do whatever you want with it. PLEASE let me know if there are any errors or if anything"
                     },
                     "children": [],
                     "level": 1
@@ -114,7 +114,7 @@
                             "max_size": 6.403161909201572
                         },
                         "page": 0,
-                        "text": "Download ZIP"
+                        "text": "Embed"
                     },
                     "children": [],
                     "level": 1
@@ -138,15 +138,15 @@
                 {
                     "heading": {
                         "style": {
-                            "bold": false,
+                            "bold": true,
                             "italic": false,
-                            "font_name": ".SFNSText",
-                            "mapped_font_size": "small",
-                            "mean_size": 7.4,
-                            "max_size": 7.470355560735129
+                            "font_name": ".SFNSText-Semibold",
+                            "mapped_font_size": "xsmall",
+                            "mean_size": 6.4,
+                            "max_size": 6.403161909201572
                         },
                         "page": 0,
-                        "text": "This is my technical interview cheat sheet. Feel free to fork it or do whatever you want with it. PLEASE let me know if there are any errors or if anything"
+                        "text": "Download ZIP"
                     },
                     "children": [],
                     "level": 1
@@ -227,39 +227,6 @@
                             "max_size": 8.537549212268743
                         },
                         "page": 0,
-                        "text": "\\"
-                    },
-                    "children": [],
-                    "level": 1
-                }
-            ],
-            "level": 0
-        },
-        {
-            "heading": {
-                "style": {
-                    "bold": true,
-                    "italic": false,
-                    "font_name": ".SFNSDisplay-Semibold",
-                    "mapped_font_size": "xlarge",
-                    "mean_size": 12.8,
-                    "max_size": 12.806323818403143
-                },
-                "page": 0,
-                "text": "Studying for a Tech Interview Sucks, so Here's a Cheat Sheet to Help"
-            },
-            "children": [
-                {
-                    "heading": {
-                        "style": {
-                            "bold": false,
-                            "italic": false,
-                            "font_name": ".SFNSText",
-                            "mapped_font_size": "middle",
-                            "mean_size": 8.5,
-                            "max_size": 8.537549212268743
-                        },
-                        "page": 0,
                         "text": "This list is meant to be both a quick guide and reference for further research into these topics. It's basically a summary of"
                     },
                     "children": [],
@@ -282,6 +249,22 @@
                     "level": 1
                 }
             ],
+            "level": 0
+        },
+        {
+            "heading": {
+                "style": {
+                    "bold": true,
+                    "italic": false,
+                    "font_name": ".SFNSDisplay-Semibold",
+                    "mapped_font_size": "xlarge",
+                    "mean_size": 12.8,
+                    "max_size": 12.806323818403143
+                },
+                "page": 0,
+                "text": "tudying for a Tech Interview Sucks, so Here's a Cheat Sheet to Help"
+            },
+            "children": [],
             "level": 0
         },
         {
@@ -4002,38 +3985,6 @@
                                             "bold": false,
                                             "italic": false,
                                             "font_name": ".SFNSText",
-                                            "mapped_font_size": "xsmall",
-                                            "mean_size": 6.4,
-                                            "max_size": 6.403161909201579
-                                        },
-                                        "page": 5,
-                                        "text": "Author"
-                                    },
-                                    "children": [],
-                                    "level": 3
-                                },
-                                {
-                                    "heading": {
-                                        "style": {
-                                            "bold": true,
-                                            "italic": false,
-                                            "font_name": ".SFNSText-Semibold",
-                                            "mapped_font_size": "xsmall",
-                                            "mean_size": 6.4,
-                                            "max_size": 6.403161909201579
-                                        },
-                                        "page": 5,
-                                        "text": "Owner"
-                                    },
-                                    "children": [],
-                                    "level": 3
-                                },
-                                {
-                                    "heading": {
-                                        "style": {
-                                            "bold": false,
-                                            "italic": false,
-                                            "font_name": ".SFNSText",
                                             "mapped_font_size": "small",
                                             "mean_size": 7.4,
                                             "max_size": 7.470355560735172
@@ -4056,6 +4007,38 @@
                                         },
                                         "page": 5,
                                         "text": "https://gist.github.com/TSiege/cbb0507082bb18ff7e4b#\ufb01le-the-technical-interview-cheat-sheet-md"
+                                    },
+                                    "children": [],
+                                    "level": 3
+                                },
+                                {
+                                    "heading": {
+                                        "style": {
+                                            "bold": false,
+                                            "italic": false,
+                                            "font_name": ".SFNSText",
+                                            "mapped_font_size": "xsmall",
+                                            "mean_size": 6.4,
+                                            "max_size": 6.403161909201579
+                                        },
+                                        "page": 5,
+                                        "text": "Author"
+                                    },
+                                    "children": [],
+                                    "level": 3
+                                },
+                                {
+                                    "heading": {
+                                        "style": {
+                                            "bold": true,
+                                            "italic": false,
+                                            "font_name": ".SFNSText-Semibold",
+                                            "mapped_font_size": "xsmall",
+                                            "mean_size": 6.4,
+                                            "max_size": 6.403161909201579
+                                        },
+                                        "page": 5,
+                                        "text": "Owner"
                                     },
                                     "children": [],
                                     "level": 3

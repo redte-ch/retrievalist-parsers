@@ -21,25 +21,24 @@
         default_item_type = "cmd"
 
     [tool.poe.tasks.lint]
-        sequence = [
-            "flake8 .",
-            "black --check .",
-            "ruff check --preview .",
-            "mypy src",
-        ]
+        shell = """
+            files=`git ls-files '*.py'`
+            black --check $files
+            ruff check --preview $files
+            mypy src
+        """
         help = "Lint all code."
-        default_item_type = "cmd"
 
     [tool.poe.tasks.format]
-        sequence = [
-            "autopep8 .",
-            "isort .",
-            "black .",
-            "ruff format .",
-            "mdformat docs README.md",
-        ]
+        shell = """
+            files=`git ls-files '*.py'`
+            autopep8 $files
+            isort $files
+            black $files --quiet
+            ruff format $files --quiet
+            mdformat docs README.md
+        """
         help = "Format all code."
-        default_item_type = "cmd"
 
 [tool.poetry]
     authors = ["Mauko Quiroga-Alvarado <mauko@redte.ch>"]
@@ -52,18 +51,18 @@
 
     [tool.poetry.dependencies]
         python = "^3.12 || ^3.13"
-        pdfminer = "20191125"
+        pdfminer-six = "^20231228"
         sortedcontainers = "2.2.2"
 
     [tool.poetry.group.dev.dependencies]
         autopep8 = "^2.0.4" # Code formatting
-        black = "24.2.0" # Code formatting
-        cython-lint = "0.16.0" # Cython linting
+        black = "^24.2.0" # Code formatting
         flake8 = "^7.0.0" # Linting
-        ipython = "8.22.1" # Interactive shell
+        ipython = "^8.22.1" # Interactive shell
         isort = "^5.13.2" # Import sorting
         mdformat = "^0.7.17" # Markdown formatting
-        mypy = "1.8.0" # Type checking
+        mypy = "^1.8.0" # Type checking
+        pandas = "^2.2.1" # Data manipulation
         pytest = "^8.0.2" # Testing
         pytest-clarity = "^1.0.1" # Simpler test output
         pytest-randomly = "^3.15.0" # Test randomization
@@ -106,16 +105,19 @@
 
 [tool.isort]
     profile = "black"
-    py_version=312
+    py_version = 312
 
 [tool.black]
     target-version = ["py312"]
 
 [tool.ruff]
     target-version = "py312"
+    line-length = 88
 
     [tool.ruff.format]
+        skip-magic-trailing-comma = true
         docstring-code-format = true
+        docstring-code-line-length = 79
 
     [tool.ruff.lint]
         select = [
@@ -166,4 +168,34 @@
             # flake8-future-annotations
             "FA",
         ]
-        ignore = ["ISC001"]
+        # https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules
+        ignore = [
+            # tab-indentation
+            "W191",
+            # indentation-with-invalid-multiple
+            "E111",
+            # indentation-with-invalid-multiple
+            "E114",
+            # over-indented
+            "E117",
+            # indent-with-spaces
+            "D206",
+            # triple-single-quotes
+            "D300",
+            # bad-quotes-inline-string
+            "Q000",
+            # bad-quotes-multiline-string
+            "Q001",
+            # bad-quotes-docstring
+            "Q002",
+            # avoidable-escaped-quote
+            "Q003",
+            # missing-trailing-comma
+            "COM812",
+            # prohibited-trailing-comma
+            "COM819",
+            # single-line-implicit-string-concatenation
+            "ISC001",
+            # multi-line-implicit-string-concatenation
+            "ISC002",
+        ]

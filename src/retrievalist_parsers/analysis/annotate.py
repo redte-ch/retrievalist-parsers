@@ -27,10 +27,15 @@ class StyleAnnotator:
         fonts = Counter()
         sizes = []
         for line in element:
-            for c in line:
-                if isinstance(c, LTChar):
-                    fonts.update([c.fontname])
-                    sizes.append(c.size)
+            if isinstance(line, LTChar):
+                fonts.update([line.fontname])
+                sizes.append(line.size)
+
+            else:
+                for c in line:
+                    if isinstance(c, LTChar):
+                        fonts.update([c.fontname])
+                        sizes.append(c.size)
         return fonts, sizes
 
     def process(self, element_gen):  # element: LTTextContainer):

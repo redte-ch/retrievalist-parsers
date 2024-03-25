@@ -2,10 +2,10 @@ from collections import Counter
 
 from pdfminer.layout import LTTextBoxVertical
 
+from retrievalist_parsers import utils
 from retrievalist_parsers.analysis.styledistribution import StyleDistribution
 from retrievalist_parsers.model.document import TextElement
 from retrievalist_parsers.model.style import TextSize
-from retrievalist_parsers.utils import word_generator
 
 
 def header_detector(element: TextElement, style_distribution: StyleDistribution):
@@ -39,7 +39,7 @@ def check_valid_header_tokens(element):
     """
     alpha_count = 0
     numeric_count = 0
-    for word in word_generator(element):
+    for word in utils.generate_words(element):
         for c in word:
             if c.isalpha():
                 alpha_count += 1

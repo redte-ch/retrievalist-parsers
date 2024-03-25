@@ -1,7 +1,7 @@
 import re
 
+from retrievalist_parsers import utils
 from retrievalist_parsers.model.document import Section
-from retrievalist_parsers.utils import word_generator
 
 numeration_pattern = re.compile("^(?=.*\\d+)((?=.*\\.)|(?=.*:)).*$")
 white_space_pattern = re.compile("\\s+")
@@ -41,8 +41,8 @@ def condition_boldness(h1: Section, h2: Section):
     @param h2:
     @return:
     """
-    h1start = next(word_generator(h1.heading._data))
-    h2start = next(word_generator(h2.heading._data))
+    h1start = next(utils.generate_words(h1.heading._data))
+    h2start = next(utils.generate_words(h2.heading._data))
     if numeration_pattern.match(h2start) and not numeration_pattern.match(h1start):
         return False
 
@@ -57,8 +57,8 @@ def condition_h2_extends_h1(h1: Section, h2: Section):
     @param h2:
     @return:
     """
-    h1start = next(word_generator(h1.heading._data))
-    h2start = next(word_generator(h2.heading._data))
+    h1start = next(utils.generate_words(h1.heading._data))
+    h2start = next(utils.generate_words(h2.heading._data))
     return len(h2start) > len(h1start) and h1start in h2start
 
 
@@ -74,8 +74,8 @@ def condition_h1_enum_h2_not(h1: Section, h2: Section):
     # if h2.heading.style.font_name != h1.heading.style.font_name:
     #    return False
 
-    h1start = next(word_generator(h1.heading._data))
-    h2start = next(word_generator(h2.heading._data))
+    h1start = next(utils.generate_words(h1.heading._data))
+    h2start = next(utils.generate_words(h2.heading._data))
     return numeration_pattern.match(h1start) and not numeration_pattern.match(h2start)
 
 

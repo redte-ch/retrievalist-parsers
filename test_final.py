@@ -1,5 +1,5 @@
-from typing import List
 import json
+from typing import List
 
 
 class Section:
@@ -14,18 +14,19 @@ class Section:
 
     def to_dict(self):
         heading_text = self.heading.text if self.heading else ""
-        heading_style = self.heading.style.to_dict() if self.heading and self.heading.style else {}
+        heading_style = (
+            self.heading.style.to_dict() if self.heading and self.heading.style else {}
+        )
         return {
-            'heading': {
-                'text': heading_text,
-                'style': heading_style,
-                'tokens': getattr(self.heading, 'tokens', []),
-                'word_bbox': getattr(self.heading, 'word_bbox', []),
+            "heading": {
+                "text": heading_text,
+                "style": heading_style,
+                "tokens": getattr(self.heading, "tokens", []),
+                "word_bbox": getattr(self.heading, "word_bbox", []),
             },
-            'children': [child.to_dict() for child in self.children],
-            'level': self.level
+            "children": [child.to_dict() for child in self.children],
+            "level": self.level,
         }
-
 
 
 def serialize_section(obj):
@@ -52,10 +53,10 @@ class Style:
 
     def to_dict(self):
         return {
-            'font': self.font,
-            'size': self.size,
-            'color': self.color,
-            'flags': self.flags
+            "font": self.font,
+            "size": self.size,
+            "color": self.color,
+            "flags": self.flags,
         }
 
 
@@ -66,33 +67,37 @@ class DanglingTextSection(Section):
     def __str__(self):
         return "{}".format(" ".join([str(e) for e in self.content]))
 
-# now this basically convert each list element into this form of text_element we defined abive.
+
+# now this basically convert each list element into this form of
+# text_element we defined abive.
 
 
 def convert_to_text_elements(element_data):
-    lines = element_data['lines']
+    lines = element_data["lines"]
     text_elements = []
 
     for line in lines:
-        spans = line['spans'][0]
+        spans = line["spans"][0]
         text_element = TextElement(
-            text=spans['text'],
+            text=spans["text"],
             style=Style(
-                font=spans['font'],
-                size=spans['size'],
-                color=spans['color'],
-                flags=spans['flags']
+                font=spans["font"],
+                size=spans["size"],
+                color=spans["color"],
+                flags=spans["flags"],
             ),
-            bbox=line['bbox'],
-            tokens=line['tokens'],
-            word_bbox=line['word_bbox']
+            bbox=line["bbox"],
+            tokens=line["tokens"],
+            word_bbox=line["word_bbox"],
         )
         text_elements.append(text_element)
 
     return text_elements
 
 
-def create_hierarchy(extracted_data: List[dict], style_distribution: dict) -> List[Section]:
+def create_hierarchy(
+    extracted_data: List[dict], style_distribution: dict
+) -> List[Section]:
     structured = []
     level_stack = []
 
@@ -142,7 +147,7 @@ def header_detector(element, style_distribution):
     You may need to adjust this based on your specific data characteristics.
     """
     # Check if the font size is greater than the body size
-    if element.style.size > (style_distribution['_body_size'] + 1):
+    if element.style.size > (style_distribution["_body_size"] + 1):
         # Check for bold and italic conditions using flags property
         if element.style.flags & 2**1:  # Check for italic (bit 1)
             return True
@@ -197,27 +202,26 @@ def __top_has_no_header(stack: [Section]):
 
 # read sample_data from block_list.json
 samplee_data = []
-with open('block_list.json') as f:
+with open("block_list.json") as f:
     samplee_data = json.load(f)
 
 
 # this is the meta deta for the whole document this i need where to get this
-distribution_data = {
-    '_body_size': 11.99,  # see
-}
+distribution_data = {"_body_size": 11.99}  # see
 
 output_structure = create_hierarchy(samplee_data, distribution_data)
 
 
 class CustomEncoder(json.JSONEncoder):
     def default(self, obj):
-        if hasattr(obj, 'to_dict'):
+        if hasattr(obj, "to_dict"):
             return obj.to_dict()
         return super().default(obj)
+
 
 # Test the create_hierarchy function with the sample data
 
 
 # Save to JSON file with custom encoder
-with open('output.json', 'w') as f:
+with open("output.json", "w") as f:
     json.dump(output_structure, f, cls=CustomEncoder, indent=4)

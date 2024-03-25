@@ -5,6 +5,7 @@ from unittest import TestCase
 
 import pandas as pd
 
+from retrievalist_parsers import utils
 from retrievalist_parsers.analysis.annotate import StyleAnnotator
 from retrievalist_parsers.analysis.sizemapper import PivotLinearMapper, PivotLogMapper
 from retrievalist_parsers.analysis.styledistribution import (
@@ -12,7 +13,7 @@ from retrievalist_parsers.analysis.styledistribution import (
     count_sizes,
 )
 from retrievalist_parsers.model.style import TextSize
-from retrievalist_parsers.utils import DocTypeFilter, element_generator, find_file
+from retrievalist_parsers.utils import DocumentTypeFilter
 
 
 class TestSizeMapper(TestCase):
@@ -63,22 +64,23 @@ class TestFonts(TestCase):
     def test_fontnames(self):
         fonts = []
         for file in itertools.islice(
-            find_file(
-                str(Path("resources/").absolute()), DocTypeFilter(endings=("pdf"))
+            utils.find_file(
+                str(Path("tests/resources/").absolute()),
+                DocumentTypeFilter(endings=("pdf")),
             ),
             3,
         ):
             if not file.is_file():
                 continue
             file_path = str(file.absolute())
-            distribution = count_sizes(element_generator(file_path))
+            distribution = count_sizes(utils.generate_text_elements(file_path))
 
             sizeMapper = PivotLogMapper(distribution)
             style_annotator = StyleAnnotator(
                 sizemapper=sizeMapper, style_info=distribution
             )
 
-            elements = element_generator(file_path)
+            elements = utils.generate_text_elements(file_path)
             with_style = style_annotator.process(elements)
 
             for data in with_style:

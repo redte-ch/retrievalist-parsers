@@ -14,8 +14,12 @@ from retrievalist_parsers.source import FileSource
 
 
 class TestPrettyStringPrinter(TestCase):
-    straight_forward_doc = str(Path("resources/interview_cheatsheet.pdf").absolute())
-    column_doc = str(Path("resources/IE00BM67HT60-ATB-FS-DE-2020-2-28.pdf").absolute())
+    straight_forward_doc = str(
+        Path("tests/resources/interview_cheatsheet.pdf").absolute()
+    )
+    column_doc = str(
+        Path("tests/resources/IE00BM67HT60-ATB-FS-DE-2020-2-28.pdf").absolute()
+    )
     correctFormattedText = (
         "[Data Structure Basics]\n\n\t[Array]\n\n\t\t[Definition:]\n\t\t\tStores data elements"
         " based on an sequential, most commonly 0 based, index."
@@ -36,7 +40,7 @@ class TestPrettyStringPrinter(TestCase):
     def test_print_pretty_file(self):
         printer = PrettyStringFilePrinter()
 
-        file_path = Path("resources/parsed/interview_cheatsheet_pretty.txt")
+        file_path = Path("tests/resources/parsed/interview_cheatsheet_pretty.txt")
         printed_file = printer.print(
             self.testDocument, file_path=str(file_path.absolute())
         )
@@ -70,7 +74,7 @@ class TestPrettyStringPrinter(TestCase):
     def test_print_json_file(self):
         printer = JsonFilePrinter()
 
-        file_path = Path("resources/parsed/interview_cheatsheet.json")
+        file_path = Path("tests/resources/parsed/interview_cheatsheet.json")
         printer.print(self.testDocument, file_path=str(file_path.absolute()))
 
         with open(file_path, "r") as file:
