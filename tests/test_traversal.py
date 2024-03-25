@@ -1,11 +1,15 @@
 from pathlib import Path
 from unittest import TestCase
 
-from pdfstructure.hierarchy.parser import HierarchyParser
-from pdfstructure.hierarchy.traversal import traverse_in_order, traverse_level_order, get_document_depth, \
-    traverse_inorder_sections_with_content
-from pdfstructure.model.document import DanglingTextSection
-from pdfstructure.source import FileSource
+from retrievalist_parsers.hierarchy.parser import HierarchyParser
+from retrievalist_parsers.hierarchy.traversal import (
+    get_document_depth,
+    traverse_in_order,
+    traverse_inorder_sections_with_content,
+    traverse_level_order,
+)
+from retrievalist_parsers.model.document import DanglingTextSection
+from retrievalist_parsers.source import FileSource
 
 
 class TestDocumentTraversal(TestCase):
@@ -42,8 +46,11 @@ class TestDocumentTraversal(TestCase):
         self.assertEqual("Efficient Sorting Basics", elements[7].heading.text)
         self.assertEqual("Basic Types of Algorithms", elements[8].heading.text)
 
-        self.assertEqual("https://gist.github.com/TSiege/"
-                         "cbb0507082bb18ff7e4b#ﬁle-the-technical-interview-cheat-sheet-md", elements[-2].heading.text)
+        self.assertEqual(
+            "https://gist.github.com/TSiege/"
+            "cbb0507082bb18ff7e4b#ﬁle-the-technical-interview-cheat-sheet-md",
+            elements[-2].heading.text,
+        )
         self.assertEqual("6/18", elements[-1].heading.text)
 
     def test_traverse_level_order_max_depth(self):
@@ -78,5 +85,7 @@ class TestDocumentTraversal(TestCase):
         self.assertEqual("Lorem Ipsum.", elements[1].heading_text)
 
     def test_retrieve_sections_with_content(self):
-        elements = [element for element in traverse_inorder_sections_with_content(self.test_doc)]
+        elements = [
+            element for element in traverse_inorder_sections_with_content(self.test_doc)
+        ]
         print(elements)

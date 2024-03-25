@@ -5,15 +5,17 @@ from unittest import TestCase
 
 import pandas as pd
 
-from pdfstructure.analysis.annotate import StyleAnnotator
-from pdfstructure.analysis.sizemapper import PivotLogMapper, PivotLinearMapper
-from pdfstructure.analysis.styledistribution import count_sizes, StyleDistribution
-from pdfstructure.model.style import TextSize
-from pdfstructure.utils import element_generator, find_file, DocTypeFilter
+from retrievalist_parsers.analysis.annotate import StyleAnnotator
+from retrievalist_parsers.analysis.sizemapper import PivotLinearMapper, PivotLogMapper
+from retrievalist_parsers.analysis.styledistribution import (
+    StyleDistribution,
+    count_sizes,
+)
+from retrievalist_parsers.model.style import TextSize
+from retrievalist_parsers.utils import DocTypeFilter, element_generator, find_file
 
 
 class TestSizeMapper(TestCase):
-
     def test_log_mapper(self):
         distribution = StyleDistribution(Counter((1, 5, 6, 10, 10, 10, 10, 20, 100)))
         scaler = PivotLogMapper(distribution)
@@ -35,13 +37,12 @@ class TestSizeMapper(TestCase):
         self.assertEqual(TextSize.xlarge, scaler.translate(TextSize, 30))
         self.assertEqual(TextSize.xlarge, scaler.translate(TextSize, 200))
 
-    
     def test_linear_mapper(self):
         distribution = StyleDistribution(Counter((1, 5, 6, 10, 10, 10, 10, 20, 100)))
         scaler = PivotLinearMapper(distribution)
-        
+
         self.assertTupleEqual((3.25, 5.5, 32.5, 55.0), scaler.borders)
-        
+
         self.assertEqual(TextSize.xsmall, scaler.translate(TextSize, -10))
         self.assertEqual(TextSize.xsmall, scaler.translate(TextSize, 0))
         self.assertEqual(TextSize.xsmall, scaler.translate(TextSize, 1))
@@ -61,23 +62,30 @@ class TestSizeMapper(TestCase):
 class TestFonts(TestCase):
     def test_fontnames(self):
         fonts = []
-        for file in itertools.islice(find_file(str(Path("resources/").absolute()), DocTypeFilter(endings=("pdf"))), 3):
+        for file in itertools.islice(
+            find_file(
+                str(Path("resources/").absolute()), DocTypeFilter(endings=("pdf"))
+            ),
+            3,
+        ):
             if not file.is_file():
                 continue
             file_path = str(file.absolute())
             distribution = count_sizes(element_generator(file_path))
-            
+
             sizeMapper = PivotLogMapper(distribution)
-            style_annotator = StyleAnnotator(sizemapper=sizeMapper, style_info=distribution)
-            
+            style_annotator = StyleAnnotator(
+                sizemapper=sizeMapper, style_info=distribution
+            )
+
             elements = element_generator(file_path)
             with_style = style_annotator.process(elements)
-            
+
             for data in with_style:
                 fonts.append(data.style.font_name)
-        
+
         ds = pd.Series(fonts, name="fonts", dtype=str)
         boldmasked = ds.loc[ds.apply(lambda x: "bold" in x.lower())]
         italic = ds.loc[ds.apply(lambda x: "italic" in x.lower())]
-        
+
         # todo, define test scenario for sample files

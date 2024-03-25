@@ -1,7 +1,7 @@
-from pdfstructure.analysis.annotate import StyleAnnotator
-from pdfstructure.analysis.sizemapper import PivotLogMapper
-from pdfstructure.analysis.styledistribution import count_sizes
-from pdfstructure.utils import element_generator
+from retrievalist_parsers.analysis.annotate import StyleAnnotator
+from retrievalist_parsers.analysis.sizemapper import PivotLogMapper
+from retrievalist_parsers.analysis.styledistribution import count_sizes
+from retrievalist_parsers.utils import element_generator
 
 
 def generate_annotated_lines(file_path):

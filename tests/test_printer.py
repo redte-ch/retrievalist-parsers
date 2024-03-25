@@ -2,17 +2,24 @@ import json
 from pathlib import Path
 from unittest import TestCase
 
-from pdfstructure.hierarchy.parser import HierarchyParser
-from pdfstructure.model.document import StructuredPdfDocument
-from pdfstructure.printer import PrettyStringFilePrinter, PrettyStringPrinter, JsonFilePrinter, JsonStringPrinter
-from pdfstructure.source import FileSource
+from retrievalist_parsers.hierarchy.parser import HierarchyParser
+from retrievalist_parsers.model.document import StructuredPdfDocument
+from retrievalist_parsers.printer import (
+    JsonFilePrinter,
+    JsonStringPrinter,
+    PrettyStringFilePrinter,
+    PrettyStringPrinter,
+)
+from retrievalist_parsers.source import FileSource
 
 
 class TestPrettyStringPrinter(TestCase):
     straight_forward_doc = str(Path("resources/interview_cheatsheet.pdf").absolute())
     column_doc = str(Path("resources/IE00BM67HT60-ATB-FS-DE-2020-2-28.pdf").absolute())
-    correctFormattedText = "[Data Structure Basics]\n\n\t[Array]\n\n\t\t[Definition:]\n\t\t\tStores data elements" \
-                           " based on an sequential, most commonly 0 based, index."
+    correctFormattedText = (
+        "[Data Structure Basics]\n\n\t[Array]\n\n\t\t[Definition:]\n\t\t\tStores data elements"
+        " based on an sequential, most commonly 0 based, index."
+    )
 
     testDocument = None
 
@@ -30,7 +37,9 @@ class TestPrettyStringPrinter(TestCase):
         printer = PrettyStringFilePrinter()
 
         file_path = Path("resources/parsed/interview_cheatsheet_pretty.txt")
-        printed_file = printer.print(self.testDocument, file_path=str(file_path.absolute()))
+        printed_file = printer.print(
+            self.testDocument, file_path=str(file_path.absolute())
+        )
 
         with open(printed_file, "r") as file:
             printed = "".join(file.readlines())
@@ -43,13 +52,20 @@ class TestPrettyStringPrinter(TestCase):
 
         decoded_document = StructuredPdfDocument.from_json(json.loads(jsonString))
 
-        self.assertEqual(self.testDocument.elements[1].heading.text,
-                         decoded_document.elements[1].heading.text)
-        self.assertEqual(self.testDocument.elements[-1].heading.text,
-                         decoded_document.elements[-1].heading.text)
+        self.assertEqual(
+            self.testDocument.elements[1].heading.text,
+            decoded_document.elements[1].heading.text,
+        )
+        self.assertEqual(
+            self.testDocument.elements[-1].heading.text,
+            decoded_document.elements[-1].heading.text,
+        )
 
         self.assertEqual("Array", decoded_document.elements[5].children[0].heading.text)
-        self.assertEqual("Time Complexity:", decoded_document.elements[5].children[0].children[2].heading.text)
+        self.assertEqual(
+            "Time Complexity:",
+            decoded_document.elements[5].children[0].children[2].heading.text,
+        )
 
     def test_print_json_file(self):
         printer = JsonFilePrinter()
@@ -60,10 +76,19 @@ class TestPrettyStringPrinter(TestCase):
         with open(file_path, "r") as file:
             decoded_document = StructuredPdfDocument.from_json(json.load(file))
 
-            self.assertEqual(self.testDocument.elements[1].heading.text,
-                             decoded_document.elements[1].heading.text)
-            self.assertEqual(self.testDocument.elements[-1].heading.text,
-                             decoded_document.elements[-1].heading.text)
+            self.assertEqual(
+                self.testDocument.elements[1].heading.text,
+                decoded_document.elements[1].heading.text,
+            )
+            self.assertEqual(
+                self.testDocument.elements[-1].heading.text,
+                decoded_document.elements[-1].heading.text,
+            )
 
-            self.assertEqual("Array", decoded_document.elements[5].children[0].heading.text)
-            self.assertEqual("Time Complexity:", decoded_document.elements[5].children[0].children[2].heading.text)
+            self.assertEqual(
+                "Array", decoded_document.elements[5].children[0].heading.text
+            )
+            self.assertEqual(
+                "Time Complexity:",
+                decoded_document.elements[5].children[0].children[2].heading.text,
+            )

@@ -1,0 +1,4 @@
+[submodule "tests/samples"]
+	path = tests/samples
+	url = git@github.com:py-pdf/sample-files.git
+	branch = 8c405ec

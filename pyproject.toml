@@ -1,0 +1,169 @@
+[build-system]
+    requires = [
+        "poetry-core>=1.0.0",
+        "poetry-dynamic-versioning>=1.0.1",
+    ]
+    build-backend = "poetry_dynamic_versioning.backend"
+
+[tool.poe]
+    [tool.poe.tasks.clean]
+        sequence = [
+            "find . -name '*.pyc' -delete",
+            "find . -name '__pycache__' -delete",
+            "rm -rf build dist src/*.egg-info",
+        ]
+        help = "Clean all build and built files."
+        default_item_type = "cmd"
+
+    [tool.poe.tasks.test]
+        sequence = ["pytest tests"]
+        help = "Test all code."
+        default_item_type = "cmd"
+
+    [tool.poe.tasks.lint]
+        sequence = [
+            "flake8 .",
+            "black --check .",
+            "ruff check --preview .",
+            "mypy src",
+        ]
+        help = "Lint all code."
+        default_item_type = "cmd"
+
+    [tool.poe.tasks.format]
+        sequence = [
+            "autopep8 .",
+            "isort .",
+            "black .",
+            "ruff format .",
+            "mdformat docs README.md",
+        ]
+        help = "Format all code."
+        default_item_type = "cmd"
+
+[tool.poetry]
+    authors = ["Mauko Quiroga-Alvarado <mauko@redte.ch>"]
+    description = ""
+    license = "EUPL-1.2"
+    name = "retrievalist-parsers"
+    readme = "README.md"
+    version = "0.0.0"
+    packages = [{ include = "retrievalist_parsers", from = "src" }]
+
+    [tool.poetry.dependencies]
+        python = "^3.12 || ^3.13"
+        pdfminer = "20191125"
+        sortedcontainers = "2.2.2"
+
+    [tool.poetry.group.dev.dependencies]
+        autopep8 = "^2.0.4" # Code formatting
+        black = "24.2.0" # Code formatting
+        cython-lint = "0.16.0" # Cython linting
+        flake8 = "^7.0.0" # Linting
+        ipython = "8.22.1" # Interactive shell
+        isort = "^5.13.2" # Import sorting
+        mdformat = "^0.7.17" # Markdown formatting
+        mypy = "1.8.0" # Type checking
+        pytest = "^8.0.2" # Testing
+        pytest-clarity = "^1.0.1" # Simpler test output
+        pytest-randomly = "^3.15.0" # Test randomization
+        ruff = "^0.3.0" # Linting
+
+[tool.mypy]
+    python_version = "3.12"
+    allow_redefinition = false
+    check_untyped_defs = true
+    files = ["src/**/*.py"]
+    ignore_errors = false
+    ignore_missing_imports = false
+    implicit_reexport = false
+    local_partial_types = true
+    no_implicit_optional = true
+    strict = true
+    strict_optional = true
+    warn_no_return = true
+    warn_unreachable = true
+
+[tool.pytest.ini_options]
+    addopts = "--strict-markers --strict-config --capture=fd --quiet"
+    empty_parameter_set_mark = "fail_at_collect"
+    testpaths = ["tests"]
+    xfail_strict = true
+    filterwarnings = [
+        "ignore::pytest.PytestCollectionWarning",
+        "ignore::RuntimeWarning",
+    ]
+    doctest_optionflags = [
+        "NORMALIZE_WHITESPACE",
+        "IGNORE_EXCEPTION_DETAIL",
+        "ELLIPSIS",
+    ]
+
+[tool.poetry-dynamic-versioning]
+    enable = false
+    vcs = "git"
+    style = "semver"
+
+[tool.isort]
+    profile = "black"
+    py_version=312
+
+[tool.black]
+    target-version = ["py312"]
+
+[tool.ruff]
+    target-version = "py312"
+
+    [tool.ruff.format]
+        docstring-code-format = true
+
+    [tool.ruff.lint]
+        select = [
+            # pyflakes
+            "F",
+            # pycodestyle
+            "E", "W",
+            # flake8-2020
+            "YTT",
+            # flake8-bugbear
+            "B",
+            # flake8-quotes
+            "Q",
+            # flake8-debugger
+            "T10",
+            # flake8-gettext
+            "INT",
+            # pylint
+            "PL",
+            # flake8-pytest-style
+            "PT",
+            # misc lints
+            "PIE",
+            # flake8-pyi
+            "PYI",
+            # tidy imports
+            "TID",
+            # implicit string concatenation
+            "ISC",
+            # type-checking imports
+            "TCH",
+            # comprehensions
+            "C4",
+            # pygrep-hooks
+            "PGH",
+            # Ruff-specific rules
+            "RUF",
+            # flake8-bandit: exec-builtin
+            "S102",
+            # numpy-legacy-random
+            "NPY002",
+            # Perflint
+            "PERF",
+            # flynt
+            "FLY",
+            # flake8-logging-format
+            "G",
+            # flake8-future-annotations
+            "FA",
+        ]
+        ignore = ["ISC001"]

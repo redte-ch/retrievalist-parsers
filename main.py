@@ -1,9 +1,11 @@
-from pdfstructure.printer import JsonFilePrinter
-from pdfstructure.hierarchy.parser import HierarchyParser
-from pdfstructure.source import FileSource
 from pathlib import Path
 
-path = r"D:\Prisha\SEM5\Extract-Heirarchy-from-Pdf\gettier 1 (2).pdf"  # Using raw string (r) or forward slashes
+from retrievalist_parsers.hierarchy.parser import HierarchyParser
+from retrievalist_parsers.printer import JsonFilePrinter
+from retrievalist_parsers.source import FileSource
+
+# Using raw string (r) or forward slashes
+path = r"D:\Prisha\SEM5\Extract-Heirarchy-from-Pdf\gettier 1 (2).pdf"
 parser = HierarchyParser()
 
 source = FileSource(path)
